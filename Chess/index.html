@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Master - Professional Chess Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Chess Master</h1>
+            <p class="subtitle">Professional Chess Experience</p>
+        </header>
+
+        <div class="game-modes" id="gameModes">
+            <div class="mode-card" onclick="selectMode('two-player')">
+                <div class="mode-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Two Player</h3>
+                <p>Play against a friend locally</p>
+            </div>
+            <div class="mode-card" onclick="selectMode('single-player')">
+                <div class="mode-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>vs Computer</h3>
+                <p>Challenge the AI at different skill levels</p>
+            </div>
+        </div>
+
+        <div class="difficulty-selection" id="difficultySelection" style="display: none;">
+            <h2>Select Difficulty Level</h2>
+            <div class="difficulty-grid">
+                <div class="difficulty-card easy" onclick="startGame('easy')">
+                    <div class="difficulty-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3>Easy</h3>
+                    <p>Beginner level - learns basic moves</p>
+                </div>
+                <div class="difficulty-card medium" onclick="startGame('medium')">
+                    <div class="difficulty-icon">
+                        <i class="fas fa-chess-knight"></i>
+                    </div>
+                    <h3>Medium</h3>
+                    <p>Intermediate level - tactical awareness</p>
+                </div>
+                <div class="difficulty-card hard" onclick="startGame('hard')">
+                    <div class="difficulty-icon">
+                        <i class="fas fa-chess-rook"></i>
+                    </div>
+                    <h3>Hard</h3>
+                    <p>Advanced level - strategic planning</p>
+                </div>
+                <div class="difficulty-card insane" onclick="startGame('insane')">
+                    <div class="difficulty-icon">
+                        <i class="fas fa-chess-king"></i>
+                    </div>
+                    <h3>Expert</h3>
+                    <p>Master level - deep calculation</p>
+                </div>
+                <div class="difficulty-card grandmaster" onclick="startGame('grandmaster')">
+                    <div class="difficulty-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <h3>Grandmaster</h3>
+                    <p>Grandmaster level - positional mastery</p>
+                </div>
+                <div class="difficulty-card superhuman" onclick="startGame('superhuman')">
+                    <div class="difficulty-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>Superhuman</h3>
+                    <p>Engine level - near perfect play</p>
+                </div>
+            </div>
+            <button class="back-btn" onclick="backToModes()">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </div>
+
+        <div class="game-container" id="gameContainer" style="display: none;">
+            <div class="game-sidebar left-sidebar">
+                <div class="player-card black-player">
+                    <div class="player-info">
+                        <div class="player-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <h3 id="blackPlayerName">Black Player</h3>
+                            <div class="rating">Rating: 1200</div>
+                        </div>
+                    </div>
+                    <div class="captured-pieces-section">
+                        <h5>Captured Pieces</h5>
+                        <div class="captured-pieces" id="blackCaptured"></div>
+                    </div>
+                </div>
+
+                <div class="game-controls">
+                    <button class="control-btn primary" onclick="newGame()">
+                        <i class="fas fa-plus"></i>
+                        <span>New Game</span>
+                    </button>
+                    <button class="control-btn" onclick="undoMove()" id="undoBtn">
+                        <i class="fas fa-undo"></i>
+                        <span>Undo</span>
+                    </button>
+                    <button class="control-btn" onclick="redoMove()" id="redoBtn">
+                        <i class="fas fa-redo"></i>
+                        <span>Redo</span>
+                    </button>
+                    <button class="control-btn" onclick="pauseGame()" id="pauseBtn">
+                        <i class="fas fa-pause"></i>
+                        <span>Pause</span>
+                    </button>
+                    <button class="control-btn" onclick="restartGame()">
+                        <i class="fas fa-refresh"></i>
+                        <span>Restart</span>
+                    </button>
+                    <button class="control-btn" onclick="toggleAnalysis()">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analysis</span>
+                    </button>
+                    <button class="control-btn" onclick="backToModes()">
+                        <i class="fas fa-home"></i>
+                        <span>Main Menu</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="game-board-section">
+                <div class="board-container-3d">
+                    <div class="board-frame">
+                        <div class="coordinates coord-files">
+                            <span>a</span><span>b</span><span>c</span><span>d</span>
+                            <span>e</span><span>f</span><span>g</span><span>h</span>
+                        </div>
+                        <div class="coordinates coord-ranks">
+                            <span>8</span><span>7</span><span>6</span><span>5</span>
+                            <span>4</span><span>3</span><span>2</span><span>1</span>
+                        </div>
+                        <div class="chessboard-3d" id="chessboard"></div>
+                    </div>
+                </div>
+
+                <div class="game-status-panel">
+                    <div class="current-turn" id="currentTurn">White to move</div>
+                    <div class="game-meta">
+                        <span class="move-counter">Move: <span id="moveCounter">1</span></span>
+                        <span class="game-timer" id="gameTime">∞</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-sidebar right-sidebar">
+                <div class="player-card white-player">
+                    <div class="player-info">
+                        <div class="player-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <h3 id="whitePlayerName">White Player</h3>
+                            <div class="rating">Rating: 1200</div>
+                        </div>
+                    </div>
+                    <div class="captured-pieces-section">
+                        <h5>Captured Pieces</h5>
+                        <div class="captured-pieces" id="whiteCaptured"></div>
+                    </div>
+                </div>
+
+                <div class="move-history-panel">
+                    <h4><i class="fas fa-history"></i> Move History</h4>
+                    <div class="moves-list" id="movesList">
+                        <div class="no-moves">Game will begin soon...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="analysis-panel" id="analysisPanel">
+            <div class="panel-header">
+                <h3><i class="fas fa-brain"></i> AI Analysis</h3>
+                <button class="close-panel" onclick="toggleAnalysis()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="analysis-content" id="analysisContent">
+                <div class="analysis-placeholder">
+                    <i class="fas fa-chess-board"></i>
+                    <p>Make a move to see analysis...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-over-modal" id="gameOverModal" style="display: none;">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="gameResult">Game Over</h2>
+                </div>
+                <div class="final-analysis" id="finalAnalysis"></div>
+                <div class="modal-actions">
+                    <button class="modal-btn primary" onclick="newGame()">
+                        <i class="fas fa-redo"></i> Play Again
+                    </button>
+                    <button class="modal-btn" onclick="backToModes()">
+                        <i class="fas fa-home"></i> Main Menu
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="pause-overlay" id="pauseOverlay" style="display: none;">
+            <div class="modal-backdrop"></div>
+            <div class="pause-content">
+                <div class="pause-icon">
+                    <i class="fas fa-pause-circle"></i>
+                </div>
+                <h2>Game Paused</h2>
+                <p>Click resume to continue playing</p>
+                <button class="modal-btn primary" onclick="resumeGame()">
+                    <i class="fas fa-play"></i> Resume Game
+                </button>
+                <button class="modal-btn" onclick="backToModes()">
+                    <i class="fas fa-home"></i> Main Menu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="chess-engine.js"></script>
+    <script src="ai-engine.js"></script>
+    <script src="game-analysis.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
